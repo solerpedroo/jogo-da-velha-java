@@ -1,3 +1,5 @@
+package jogador;
+
 public class Marca
 {
     private char simbolo;

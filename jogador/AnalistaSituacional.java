@@ -1,3 +1,5 @@
+package jogador;
+
 public class AnalistaSituacional
 {
     private Tabuleiro tabDoJogo;

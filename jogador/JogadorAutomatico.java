@@ -8,20 +8,15 @@ public class JogadorAutomatico implements Jogador
     public JogadorAutomatico (Tabuleiro tab) throws Exception
     {
         if (tab == null) throw new Exception("Tabuleiro invalido");
-
         this.tabDoJogo = tab;
-
-        if ((int)(Math.random() * 2) == 0)
-            this.marca = new Marca('X');
-        else
-            this.marca = new Marca('O');
+        if ((int)(Math.random() * 2) == 0) this.marca = new Marca('X');
+        else this.marca = new Marca('O');
     }
 
     public JogadorAutomatico (Tabuleiro tab, Marca mrc) throws Exception
     {
         if (tab == null) throw new Exception("Tabuleiro invalido");
         if (mrc == null) throw new Exception("Marca invalida");
-
         this.tabDoJogo = tab;
         this.marca = mrc;
     }
@@ -36,15 +31,11 @@ public class JogadorAutomatico implements Jogador
         try
         {
             int[] posicao = this.buscarPosicaoParaCompletar(this.marca);
-
             if (posicao == null)
             {
                 Marca marcaAdversaria;
-                if (this.marca.getSimbolo() == 'X')
-                    marcaAdversaria = new Marca('O');
-                else
-                    marcaAdversaria = new Marca('X');
-
+                if (this.marca.getSimbolo() == 'X') marcaAdversaria = new Marca('O');
+                else marcaAdversaria = new Marca('X');
                 posicao = this.buscarPosicaoParaCompletar(marcaAdversaria);
             }
 
@@ -62,8 +53,7 @@ public class JogadorAutomatico implements Jogador
             }
 
             // tenta primeiro os cantos; depois, qualquer outra posicao livre
-            int[][] posicoes = {{0, 0}, {0, 2}, {2, 0}, {2, 2},
-                                {0, 1}, {1, 0}, {1, 2}, {2, 1}};
+            int[][] posicoes = {{0, 0}, {0, 2}, {2, 0}, {2, 2}, {0, 1}, {1, 0}, {1, 2}, {2, 1}};
             int inicio = (int)(Math.random() * posicoes.length);
 
             for (int i = 0; i < posicoes.length; i++)
@@ -72,8 +62,7 @@ public class JogadorAutomatico implements Jogador
                 int lin = posicoes[indice][0];
                 int col = posicoes[indice][1];
 
-                if (!this.tabDoJogo.haMarcaNaPosicao(lin, col))
-                {
+                if (!this.tabDoJogo.haMarcaNaPosicao(lin, col)) {
                     this.tabDoJogo.setMarcaNaPosicao(this.marca, lin, col);
                     return;
                 }
