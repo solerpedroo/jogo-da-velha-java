@@ -40,6 +40,9 @@ public class Marca
     public int hashCode ()
     {
         // faça
-        return this.simbolo;
+        int retorno = 1;
+        retorno = retorno *2+((Character)this.simbolo).hashCode();
+        if (retorno < 0) retorno = -retorno;
+        return retorno;
     }
 }
