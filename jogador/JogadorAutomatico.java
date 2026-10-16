@@ -6,119 +6,126 @@ public class JogadorAutomatico implements Jogador
     private Tabuleiro tabDoJogo = null;
 
     public JogadorAutomatico (Tabuleiro tab) throws Exception
-    {   tabDoJogo = tab;
-        // atribuir tab para tabDoJogo
-        // fazer o jogador escolher sua marca
-        // via sorteio de numeros aleatorio
-        if ((int)(Math.random()*2) == 0)
-            marca=new marca('X');
+    {
+        if (tab == null) throw new Exception("Tabuleiro invalido");
+
+        this.tabDoJogo = tab;
+
+        if ((int)(Math.random() * 2) == 0)
+            this.marca = new Marca('X');
         else
-            marca=new marca('O');
+            this.marca = new Marca('O');
     }
 
     public JogadorAutomatico (Tabuleiro tab, Marca mrc) throws Exception
     {
-        // atribuir tab para tabDoJogo
-        // e mrc para marca
+        if (tab == null) throw new Exception("Tabuleiro invalido");
+        if (mrc == null) throw new Exception("Marca invalida");
+
+        this.tabDoJogo = tab;
+        this.marca = mrc;
     }
 
     public Marca getMarca ()
     {
-        // retorna a marca do jogador
+        return this.marca;
     }
 
     public void facaSuaJogada ()
     {
         try
         {
-            // tentando ganhar na linha 0
-            if (this.tabDoJogo.matriz[0][0]==null &&
-                this.tabDoJogo.matriz[0][1]!=null && this.tabDoJogo.matriz[0][1].equals(this.marca) &&
-                this.tabDoJogo.matriz[0][2]!=null && this.tabDoJogo.matriz[0][2].equals(this.marca))
-                this.tabDoJogo.setMarcaNaPosicao(this.marca, 0,0);
-            else
-            if (this.tabDoJogo.matriz[0][0]!=null && this.tabDoJogo.matriz[0][0].equals(this.marca) &&
-                this.tabDoJogo.matriz[0][1]==null &&
-                this.tabDoJogo.matriz[0][2]!=null && this.tabDoJogo.matriz[0][2].equals(this.marca))
-                this.tabDoJogo.setMarcaNaPosicao(this.marca, 0,1);
-            else
-            if (this.tabDoJogo.matriz[0][0]!=null && this.tabDoJogo.matriz[0][0].equals(this.marca) &&
-                this.tabDoJogo.matriz[0][1]!=null && this.tabDoJogo.matriz[0][1].equals(this.marca) &&
-                this.tabDoJogo.matriz[0][2]==null)
-                this.tabDoJogo.setMarcaNaPosicao(this.marca, 0,2);
-            else
-            // tentando ganhar na linha 1
-            if ... else if ... else if ...
-            else
-            // tentando ganhar na linha 2
-            if ... else if ... else if ...
-            else
-            // tentando ganhar na coluna 0
-            if ... else if ... else if ...
-            else
-            // tentando ganhar na coluna 1
-            if ... else if ... else if ...
-            else
-            // tentando ganhar na coluna 2
-            if ... else if ... else if ...
-            else
-            // tentando ganhar na diagonal principal
-            if ... else if ... else if ...
-            else
-            // tentando ganhar na diagonal secundaria
-            if ... else if ... else if ...
-            else
-            // tentando atrapalhar vitoria na linha 0
-            if ... else if ... else if ...
-            else
-            // tentando atrapalhar vitoria na linha 1
-            if ... else if ... else if ...
-            else
-            // tentando atrapalhar vitoria na linha 2
-            if ... else if ... else if ...
-            else
-            // tentando atrapalhar vitoria na coluna 0
-            if ... else if ... else if ...
-            else
-            // tentando atrapalhar vitoria na coluna 1
-            if ... else if ... else if ...
-            else
-            // tentando atrapalhar vitoria na coluna 2
-            if ... else if ... else if ...
-            else
-            // tentando atrapalhar vitoria na diagonal principal
-            if ... else if ... else if ...
-            else
-            // tentando atrapalhar vitoria na diagonal secundaria
-            if ... else if ... else if ...
-            else
-            // tentando jogada de futuro (há 1 marca do jogador e mais nada; vamos lá e plantamos outra marca) na linha 0
-            if ... else if ... else if ...
-            else
-            // tentando jogada de futuro (há 1 marca do jogador e mais nada; vamos lá e plantamos outra marca) na linha 1
-            if ... else if ... else if ...
-            else
-            // tentando jogada de futuro (há 1 marca do jogador e mais nada; vamos lá e plantamos outra marca) na linha 2
-            if ... else if ... else if ...
-            else
-            // tentando jogada de futuro (há 1 marca do jogador e mais nada; vamos lá e plantamos outra marca) na coluna 0
-            if ... else if ... else if ...
-            else
-            // tentando jogada de futuro (há 1 marca do jogador e mais nada; vamos lá e plantamos outra marca) na coluna 1
-            if ... else if ... else if ...
-            else
-            // tentando jogada de futuro (há 1 marca do jogador e mais nada; vamos lá e plantamos outra marca) na coluna 2
-            if ... else if ... else if ...
-            else
-            // tentando jogada de futuro (há 1 marca do jogador e mais nada; vamos lá e plantamos outra marca) na diagonal principal
-            if ... else if ... else if ...
-            else
-            // tentando jogada de futuro (há 1 marca do jogador e mais nada; vamos lá e plantamos outra marca) na diagonal secundaria
-            if ... else if ... else if ...
-            else
-            // termine jogando num lugar qualquer que esteja livre
+            int[] posicao = this.buscarPosicaoParaCompletar(this.marca);
+
+            if (posicao == null)
+            {
+                Marca marcaAdversaria;
+                if (this.marca.getSimbolo() == 'X')
+                    marcaAdversaria = new Marca('O');
+                else
+                    marcaAdversaria = new Marca('X');
+
+                posicao = this.buscarPosicaoParaCompletar(marcaAdversaria);
+            }
+
+            if (posicao != null)
+            {
+                this.tabDoJogo.setMarcaNaPosicao(this.marca, posicao[0], posicao[1]);
+                return;
+            }
+
+            // prefere o centro quando ele estiver livre
+            if (!this.tabDoJogo.haMarcaNaPosicao(1, 1))
+            {
+                this.tabDoJogo.setMarcaNaPosicao(this.marca, 1, 1);
+                return;
+            }
+
+            // tenta primeiro os cantos; depois, qualquer outra posicao livre
+            int[][] posicoes = {{0, 0}, {0, 2}, {2, 0}, {2, 2},
+                                {0, 1}, {1, 0}, {1, 2}, {2, 1}};
+            int inicio = (int)(Math.random() * posicoes.length);
+
+            for (int i = 0; i < posicoes.length; i++)
+            {
+                int indice = (inicio + i) % posicoes.length;
+                int lin = posicoes[indice][0];
+                int col = posicoes[indice][1];
+
+                if (!this.tabDoJogo.haMarcaNaPosicao(lin, col))
+                {
+                    this.tabDoJogo.setMarcaNaPosicao(this.marca, lin, col);
+                    return;
+                }
+            }
         }
         catch (Exception erro)
-        {} // ignorando pois sei que n o estou usando posicao invalida nem comparando com equals um null
+        {}
+    }
+
+    private int[] buscarPosicaoParaCompletar (Marca marca) throws Exception
+    {
+        int[][][] trincas = {
+            {{0, 0}, {0, 1}, {0, 2}},
+            {{1, 0}, {1, 1}, {1, 2}},
+            {{2, 0}, {2, 1}, {2, 2}},
+            {{0, 0}, {1, 0}, {2, 0}},
+            {{0, 1}, {1, 1}, {2, 1}},
+            {{0, 2}, {1, 2}, {2, 2}},
+            {{0, 0}, {1, 1}, {2, 2}},
+            {{0, 2}, {1, 1}, {2, 0}}
+        };
+
+        for (int i = 0; i < trincas.length; i++)
+        {
+            int quantidadeDaMarca = 0;
+            int linVazia = -1;
+            int colVazia = -1;
+
+            for (int j = 0; j < trincas[i].length; j++)
+            {
+                int lin = trincas[i][j][0];
+                int col = trincas[i][j][1];
+                Marca atual = this.tabDoJogo.getMarcaNaPosicao(lin, col);
+
+                if (atual == null)
+                {
+                    linVazia = lin;
+                    colVazia = col;
+                }
+                else if (atual.equals(marca))
+                    quantidadeDaMarca++;
+                else
+                {
+                    quantidadeDaMarca = -1;
+                    break;
+                }
+            }
+
+            if (quantidadeDaMarca == 2 && linVazia >= 0)
+                return new int[] {linVazia, colVazia};
+        }
+
+        return null;
     }
 }
