@@ -5,54 +5,90 @@ public class Tabuleiro implements Cloneable
 
     public boolean haMarcaNaPosicao (int lin, int col) throws Exception
     {
-        // verifico se em matriz[lin][col]
-        // tem null, retornando false em caso
-        // afirmativo, ou true em caso negativo
-        // dar excecao caso lin ou col invalido
+        if (lin < 0 || lin >= this.matriz.length || col < 0 || col >= this.matriz[0].length) throw new Exception("Posicao invalida");
+        return this.matriz[lin][col] != null;
     }
 
     public Marca getMarcaNaPosicao (int lin, int col) throws Exception
     {
-        // retornar a marca que tem em
-        // matriz[lin][col]
-        // dar excecao caso lin ou col invalido
+        if (lin < 0 || lin >= this.matriz.length || col < 0 || col >= this.matriz[0].length) throw new Exception("Posicao invalida");
+        return this.matriz[lin][col];
     }
 
     public void setMarcaNaPosicao (Marca mrc, int lin, int col) throws Exception
     {
-        // colocar mrc em matriz[lin][col],
-        // dar excecao caso lin ou col invalido
-        // dar excecao caso mrc seja null
+        if (lin < 0 || lin >= this.matriz.length || col < 0 || col >= this.matriz[0].length) throw new Exception("Posicao invalida");
+        if (mrc == null) throw new Exception("Marca invalida");
+        this.matriz[lin][col] = mrc;
     }
 
     @Override
     public String toString ()
     {
-        // retornar em um String o tabuleiro
-        // formatado para ser exibido na tela
+        String ret = "";
+
+        for (int lin = 0; lin < this.matriz.length; lin++) {
+            for (int col = 0; col < this.matriz[lin].length; col++) {
+                if (col > 0) ret += " | ";
+                if (this.matriz[lin][col] == null) ret += " ";
+                else ret += this.matriz[lin][col].toString();
+            }
+            if (lin < this.matriz.length - 1) ret += "\n---------\n";
+        }
+        return ret;
     }
 
     @Override
     public boolean equals (Object obj)
     {
-        // retornar true se this for igual a obj ou false caso contrario
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (obj.getClass() != this.getClass()) return false;
+        Tabuleiro tabuleiro = (Tabuleiro)obj;
+
+        for (int lin = 0; lin < this.matriz.length; lin++) {
+            for (int col = 0; col < this.matriz[lin].length; col++) {
+                if (this.matriz[lin][col] == null) {
+                    if (tabuleiro.matriz[lin][col] != null) return false;
+                } else if (!this.matriz[lin][col].equals(tabuleiro.matriz[lin][col]))
+                    return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public int hashCode ()
     {
-        // faça
+        int retorno = 1;
+        for (int lin = 0; lin < this.matriz.length; lin++){
+            for (int col = 0; col < this.matriz[lin].length; col++) {
+                retorno = retorno * 31 + (this.matriz[lin][col] == null ? 0 : this.matriz[lin][col].hashCode());
+            }
+        }
+        return retorno;
     }
 
     // construtor de copia
     public Tabuleiro (Tabuleiro modelo) throws Exception
     {
-        // faça
+        if (modelo == null) throw new Exception("Tabuleiro invalido");
+
+        for (int lin = 0; lin < this.matriz.length; lin++) {
+            for (int col = 0; col < this.matriz[lin].length; col++) {
+                if (modelo.matriz[lin][col] != null)
+                    this.matriz[lin][col] = new Marca(modelo.matriz[lin][col].getSimbolo());
+            }
+        }
     }
 
     @Override
     public Object clone ()
     {
-        // faça
+        Tabuleiro retorno = null;
+        try {
+            retorno = new Tabuleiro(this);
+        } catch (Exception erro) {}
+        return retorno;
     }
 }
