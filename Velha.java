@@ -1,5 +1,4 @@
 import jogador.*;
-import java.io.*;
 
 public class Velha
 {
@@ -44,7 +43,11 @@ public class Velha
 
                 jogadorHumanoComeca = !jogadorHumanoComeca;
             } catch (Exception e)
-            {}
+            {
+                // Encerro aqui para nao continuar uma partida interrompida.
+                System.out.println(e.getMessage());
+                return;
+            }
         } while (jogadorH.querMaisUmaPartida());
     }
 }

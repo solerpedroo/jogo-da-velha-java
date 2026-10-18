@@ -2,5 +2,6 @@ package jogador;
 
 public interface Jogador
 {
-    public void facaSuaJogada ();
+    // Permito avisar o programa principal quando nao for possivel continuar.
+    public void facaSuaJogada () throws Exception;
 }

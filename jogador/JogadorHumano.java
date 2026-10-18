@@ -7,7 +7,8 @@ public class JogadorHumano implements Jogador
 {
     private Marca          marca     = null;
     private Tabuleiro      tabDoJogo = null;
-    private BufferedReader teclado   = new BufferedReader
+    // Reutilizo o teclado para nao perder entradas entre uma partida e outra.
+    private static BufferedReader teclado   = new BufferedReader
                                         (new InputStreamReader
                                         (System.in));
 
@@ -20,7 +21,7 @@ public class JogadorHumano implements Jogador
         {
             System.out.print("Escolha sua marca (X/O): ");
 
-            String resposta = this.teclado.readLine();
+            String resposta = JogadorHumano.teclado.readLine();
             if (resposta == null) throw new Exception("Entrada encerrada");
 
             resposta = resposta.trim().toUpperCase();
@@ -53,7 +54,7 @@ public class JogadorHumano implements Jogador
         return this.marca;
     }
 
-    public void facaSuaJogada ()
+    public void facaSuaJogada () throws Exception
     {
         while (true)
         {
@@ -63,11 +64,11 @@ public class JogadorHumano implements Jogador
                 System.out.println("Sua marca: " + this.marca);
                 System.out.print("Digite linha e coluna (1 a 3), separadas por espaco: ");
 
-                String entrada = this.teclado.readLine();
+                String entrada = JogadorHumano.teclado.readLine();
                 if (entrada == null)
                 {
-                    System.out.println("Entrada encerrada.");
-                    return;
+                    // Aviso o main para encerrar sem passar a vez ao computador.
+                    throw new Exception("Entrada encerrada");
                 }
 
                 String[] valores = entrada.trim().split("\\s+");
@@ -99,11 +100,6 @@ public class JogadorHumano implements Jogador
             {
                 System.out.println("Digite numeros validos para linha e coluna.");
             }
-            catch (Exception erro)
-            {
-                System.out.println("Nao foi possivel registrar a jogada.");
-                return;
-            }
         }
     }
 
@@ -132,7 +128,7 @@ public class JogadorHumano implements Jogador
             try
             {
                 System.out.print("Deseja jogar outra partida? (S/N): ");
-                String resposta = this.teclado.readLine();
+                String resposta = JogadorHumano.teclado.readLine();
 
                 if (resposta == null)
                     return false;
