@@ -30,14 +30,20 @@ public class JogadorAutomatico implements Jogador
     {
         try
         {
-            int[] posicao = this.buscarPosicaoParaCompletar(this.marca);
+            // Primeiro tento completar uma trinca para ganhar a partida.
+            int[] posicao = this.buscarPosicao(this.marca, 2);
             if (posicao == null)
             {
+                // Se nao posso ganhar agora, tento impedir a vitoria do adversario.
                 Marca marcaAdversaria;
                 if (this.marca.getSimbolo() == 'X') marcaAdversaria = new Marca('O');
                 else marcaAdversaria = new Marca('X');
-                posicao = this.buscarPosicaoParaCompletar(marcaAdversaria);
+                posicao = this.buscarPosicao(marcaAdversaria, 2);
             }
+
+            // Se nao preciso bloquear, procuro uma trinca com uma marca minha
+            // e duas casas livres para preparar uma proxima jogada.
+            if (posicao == null) posicao = this.buscarPosicao(this.marca, 1);
 
             if (posicao != null)
             {
@@ -45,26 +51,16 @@ public class JogadorAutomatico implements Jogador
                 return;
             }
 
-            // prefere o centro quando ele estiver livre
-            if (!this.tabDoJogo.haMarcaNaPosicao(1, 1))
+            // Se nenhuma estrategia servir, jogo na primeira casa livre.
+            for (int lin = 0; lin < 3; lin++)
             {
-                this.tabDoJogo.setMarcaNaPosicao(this.marca, 1, 1);
-                return;
-            }
-
-            // tenta primeiro os cantos; depois, qualquer outra posicao livre
-            int[][] posicoes = {{0, 0}, {0, 2}, {2, 0}, {2, 2}, {0, 1}, {1, 0}, {1, 2}, {2, 1}};
-            int inicio = (int)(Math.random() * posicoes.length);
-
-            for (int i = 0; i < posicoes.length; i++)
-            {
-                int indice = (inicio + i) % posicoes.length;
-                int lin = posicoes[indice][0];
-                int col = posicoes[indice][1];
-
-                if (!this.tabDoJogo.haMarcaNaPosicao(lin, col)) {
-                    this.tabDoJogo.setMarcaNaPosicao(this.marca, lin, col);
-                    return;
+                for (int col = 0; col < 3; col++)
+                {
+                    if (!this.tabDoJogo.haMarcaNaPosicao(lin, col))
+                    {
+                        this.tabDoJogo.setMarcaNaPosicao(this.marca, lin, col);
+                        return;
+                    }
                 }
             }
         }
@@ -72,8 +68,9 @@ public class JogadorAutomatico implements Jogador
         {}
     }
 
-    private int[] buscarPosicaoParaCompletar (Marca marca) throws Exception
+    private int[] buscarPosicao (Marca marca, int quantidadeNecessaria) throws Exception
     {
+        // Guardo aqui as tres linhas, as tres colunas e as duas diagonais.
         int[][][] trincas = {
             {{0, 0}, {0, 1}, {0, 2}},
             {{1, 0}, {1, 1}, {1, 2}},
@@ -106,12 +103,14 @@ public class JogadorAutomatico implements Jogador
                     quantidadeDaMarca++;
                 else
                 {
+                    // Descarto a trinca quando encontro uma marca adversaria.
                     quantidadeDaMarca = -1;
                     break;
                 }
             }
 
-            if (quantidadeDaMarca == 2 && linVazia >= 0)
+            // Uso a mesma busca para ganhar, bloquear ou preparar uma jogada.
+            if (quantidadeDaMarca == quantidadeNecessaria && linVazia >= 0)
                 return new int[] {linVazia, colVazia};
         }
 
