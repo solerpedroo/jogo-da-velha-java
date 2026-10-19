@@ -10,7 +10,7 @@ public class JogadorHumano implements Jogador
     // Reutilizo o teclado para nao perder entradas entre uma partida e outra.
     private static BufferedReader teclado   = new BufferedReader
                                         (new InputStreamReader
-                                        (System.in));
+                                        (System.in)); //imput serve para converter os bytes recebidos em caracteres.
 
     public JogadorHumano (Tabuleiro tab) throws Exception
     {
@@ -71,7 +71,7 @@ public class JogadorHumano implements Jogador
                     throw new Exception("Entrada encerrada");
                 }
 
-                String[] valores = entrada.trim().split("\\s+");
+                String[] valores = entrada.trim().split("\\s+"); // Divide o texto onde ouver um ou mais espaço em branco
                 if (valores.length != 2)
                 {
                     System.out.println("Digite dois numeros: linha e coluna.");
